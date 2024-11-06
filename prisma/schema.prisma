@@ -1,0 +1,33 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-py"
+}
+
+model Supplier {
+  id              Int              @id @default(autoincrement())
+  name            String
+  country         String
+  contract_terms  Json
+  compliance_score Int
+  last_audit      DateTime?
+  ComplianceRecords ComplianceRecord[]
+
+  @@map("supplier")
+}
+
+model ComplianceRecord {
+  id          Int       @id @default(autoincrement())
+  supplier_id Int
+  metric      String
+  date_recorded DateTime
+  result      String
+  status      String
+
+  Supplier Supplier @relation(fields: [supplier_id], references: [id])
+
+  @@map("compliancerecord")
+}
