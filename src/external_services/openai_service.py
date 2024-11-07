@@ -14,7 +14,8 @@ model = genai.GenerativeModel('gemini-pro')
 
 async def analyze_compliance_data(compliance_records: List[dict]):
     compliance_data_dict = [record.dict() if isinstance(record, BaseModel) else record for record in compliance_records]
-    prompt = f"Analyze the following compliance data for potential issues:\n{json.dumps(compliance_data_dict)}"
+    prompt = f"Analyze the compliance issues for supplier :\n{compliance_data_dict}\n"
+    prompt += "Provide insights on non-compliance patterns and suggest ways to improve."
     
     try:
         response = model.generate_content(prompt)
@@ -35,11 +36,7 @@ async def generate_compliance_insights(compliance_records: List[ComplianceRecord
     try:
         response = model.generate_content(prompt)
         analysis = response.text.strip()
-        insights = [
-            ComplianceInsight(suggestion="Optimize delivery time", recommendation="Review logistics partners"),
-            ComplianceInsight(suggestion="Improve quality checks", recommendation="Increase inspection frequency")
-        ]
         
-        return ComplianceAnalysisResult(analysis=analysis, insights=insights)
+        return ComplianceAnalysisResult(analysis=analysis)
     except Exception as e:
         raise Exception(f"Failed to generate insights: {str(e)}")

@@ -7,20 +7,23 @@ router = APIRouter()
 
 @router.post("/suppliers/check-compliance", response_model=ComplianceAnalysisResponse)
 async def check_compliance(data: ComplianceCheckRequest):
-    try:
-        compliance_issues = await analyze_compliance_data(data.compliance_records)
-        
-        return ComplianceAnalysisResponse(
-            success=True,
-            message="Compliance data analyzed successfully",
-            insights=compliance_issues,
-        )
+    async with get_db() as db:
+        try:
+            past_record=await db.compliancerecord.find_many(where={"supplier_id": data.supplier_id})
+            compliancerecords=past_record+data.compliance_records
+            compliance_issues = await analyze_compliance_data(compliancerecords)
+            
+            return ComplianceAnalysisResponse(
+                success=True,
+                message="Compliance data analyzed successfully",
+                insights=compliance_issues,
+            )
 
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Failed to analyze compliance data: {str(e)}"
-        )
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to analyze compliance data: {str(e)}"
+            )
     
 @router.get("/suppliers/insights/{supplier_id}", response_model=ComplianceInsightsWithAnalysisResponse)
 async def get_insights(supplier_id: int):
@@ -32,7 +35,6 @@ async def get_insights(supplier_id: int):
             return ComplianceInsightsWithAnalysisResponse(
                 success=True,
                 analysis=result.analysis,
-                insights=result.insights
             )
         except Exception as e:
             print(e)

@@ -30,8 +30,6 @@ class ComplianceInsight(BaseModel):
 class ComplianceInsightsWithAnalysisResponse(BaseModel):
     success: bool
     analysis: str
-    insights: List[ComplianceInsight]
 
 class ComplianceAnalysisResult(BaseModel):
     analysis: str
-    insights: List[ComplianceInsight]
