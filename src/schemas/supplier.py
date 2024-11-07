@@ -50,3 +50,10 @@ class SupplierResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class SupplierCreateRequest(BaseModel):
+    name: str
+    country: str
+    compliance_score: int
+    contract_terms: Dict[str, Union[str, int, bool]]
+    last_audit: Optional[datetime] = None
