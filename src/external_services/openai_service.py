@@ -1,5 +1,5 @@
 import google.generativeai as genai
-import time
+from src.schemas.compliance import ComplianceInsight,ComplianceRecord,ComplianceAnalysisResult
 import json
 from pydantic import BaseModel
 from typing import List
@@ -23,3 +23,23 @@ async def analyze_compliance_data(compliance_records: List[dict]):
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to analyze compliance data: {str(e)}")
+
+async def generate_compliance_insights(compliance_records: List[ComplianceRecord]) -> ComplianceAnalysisResult:
+    formatted_data = [
+        {"metric": rec.metric, "result": rec.result, "date_recorded": rec.date_recorded.isoformat(), "status": rec.status}
+        for rec in compliance_records
+    ]
+    
+    prompt = f"Analyze the following compliance data for supplier and suggest improvements in compliance and contract terms:\n{formatted_data}"
+    
+    try:
+        response = model.generate_content(prompt)
+        analysis = response.text.strip()
+        insights = [
+            ComplianceInsight(suggestion="Optimize delivery time", recommendation="Review logistics partners"),
+            ComplianceInsight(suggestion="Improve quality checks", recommendation="Increase inspection frequency")
+        ]
+        
+        return ComplianceAnalysisResult(analysis=analysis, insights=insights)
+    except Exception as e:
+        raise Exception(f"Failed to generate insights: {str(e)}")
