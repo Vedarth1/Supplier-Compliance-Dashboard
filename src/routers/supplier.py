@@ -43,14 +43,11 @@ async def get_supplier_by_id(supplier_id: int):
 async def create_supplier(supplier_data: SupplierCreateRequest):
     async with get_db() as db:
         try:
-            # Convert the contract_terms to a JSON string
             supplier_dict = supplier_data.dict()
             supplier_dict['contract_terms'] = json.dumps(supplier_data.contract_terms)
 
-            # Create the new supplier
             new_supplier = await db.supplier.create(data=supplier_dict)
 
-            # Return the created supplier
             return SupplierBase.from_orm(new_supplier)
 
         except Exception as e:
