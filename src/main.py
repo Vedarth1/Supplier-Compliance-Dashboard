@@ -1,21 +1,15 @@
-from fastapi import FastAPI, Depends, HTTPException
-from src.schemas import SupplierCreate, Supplier
-import prisma
-from src.routers import suppliers, compliance
+from contextlib import asynccontextmanager
+from fastapi import FastAPI
+from src.routers import supplier
+from src.db import prisma
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        await prisma.connect()
+        yield
+    finally:
+        await prisma.disconnect()
 
-app.include_router(suppliers.router)
-app.include_router(compliance.router)
-
-@app.on_event("startup")
-async def startup():
-    await prisma.connect()
-
-@app.on_event("shutdown")
-async def shutdown():
-    await prisma.disconnect()
-
-@app.get("/")
-async def root():
-    return {"message": "Supplier Compliance Dashboard API"}
+app = FastAPI(lifespan=lifespan) 
+app.include_router(supplier.router)

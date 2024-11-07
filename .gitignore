@@ -1,3 +1,50 @@
+# Python bytecode files
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual environment
+/venv/
+
+# FastAPI specific
+*.db
+*.sqlite3
+
+# Environment variable files
 .env
-README.md
-/venv
+venv/
+
+# VSCode settings (if using VSCode)
+.vscode/
+
+# PyCharm settings (if using PyCharm)
+.idea/
+
+# Migrations (if using Alembic)
+migrations/
+
+# Log files
+*.log
+
+# Coverage reports
+.coverage
+*.cover
+
+# Distribution / Packaging
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# .pytest_cache (for pytest users)
+.pytest_cache/
+
+# Docker files
+docker-compose.override.yml
+*.dockerfile
+.docker/
+
+# Any other files you wish to ignore
