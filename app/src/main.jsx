@@ -10,6 +10,7 @@ import ErrorPage from "./pages/errorpage.jsx";
 import Login from "./pages/login.jsx";
 import Signup from "./pages/signup.jsx";
 import Dashboard from "./pages/dashboard.jsx";
+import Supplier from "./pages/Supplier.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,8 +29,11 @@ const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Dashboard/>
+  },
+  {
+    path: "/supplier/:id",
+    element: <Supplier/>
   }
-  
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
